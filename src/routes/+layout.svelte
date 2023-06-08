@@ -102,7 +102,7 @@
 	<meta name="description" content="The first open source alternative to ChatGPT. 💪" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@huggingface" />
-	<meta property="og:title" content="HuggingChat" />
+	<meta property="og:title" content="H2OGPT" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="{PUBLIC_ORIGIN || $page.url.origin}{base}" />
 	<meta property="og:image" content="{PUBLIC_ORIGIN || $page.url.origin}{base}/thumbnail.png" />

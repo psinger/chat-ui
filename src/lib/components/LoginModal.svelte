@@ -18,7 +18,7 @@
 		class="flex w-full flex-col items-center gap-6 bg-gradient-to-t from-yellow-500/40 via-yellow-500/10 to-yellow-500/0 px-4 pb-10 pt-9 text-center"
 	>
 		<h2 class="flex items-center text-2xl font-semibold text-gray-800">
-			<Logo classNames="text-3xl mr-1.5" />HuggingChat
+			<Logo classNames="text-3xl mr-1.5" />H2OGPT
 			<div
 				class="ml-3 flex h-6 items-center rounded-lg border border-gray-100 bg-gray-50 px-2 text-base text-gray-400"
 			>
@@ -31,6 +31,9 @@
 		<p class="text-base text-gray-800">
 			AI is an area of active research with known problems such as biased generation and
 			misinformation. Do not use this application for high-stakes decisions or advice.
+		</p>
+		<p class="text-base text-gray-800">
+			By using this application, you accept our<br> <a href="https://github.com/h2oai/h2ogpt/blob/main/docs/tos.md" style="color: blue;">Terms of Service</a>.
 		</p>
 		<p class="px-2 text-sm text-gray-500">
 			Your conversations will be shared with model authors unless you disable it from your settings.
