@@ -2,6 +2,12 @@
 
 At H2O.ai, democratizing AI isn’t just an idea. It’s a movement. And that means that it requires action. We started out as a group of like minded individuals in the open source community, collectively driven by the idea that there should be freedom around the creation and use of AI.
 
+## Technical details
+
+This application is based on [HuggingFace's open source Chat UI](https://github.com/huggingface/chat-ui).
+
+The inference backend is running the optimized [text-generation-inference](https://github.com/huggingface/text-generation-inference).
+
 ## Terms of Services
 
 Terms of Service for H2O.ai's hosted running versions of h2oGPT, e.g. on Hugging Face Spaces, AWS, Google Colab, Kaggle, or other servers that run the software. This document does not apply to the code, models, or data related to the project h2oGPT that reside on GitHub, Hugging Face Model Cards, or Hugging Face Data Cards or to the code that resides at Hugging Face Spaces.

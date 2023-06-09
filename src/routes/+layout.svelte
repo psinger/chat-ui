@@ -99,7 +99,7 @@
 </script>
 
 <svelte:head>
-	<meta name="description" content="The first open source alternative to ChatGPT. 💪" />
+	<meta name="description" content="Democratizing AI with h2oGPT." />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:site" content="@huggingface" />
 	<meta property="og:title" content="h2oGPT" />
