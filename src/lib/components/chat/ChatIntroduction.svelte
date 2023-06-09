@@ -32,7 +32,7 @@
 		<div>
 			<div class="mb-3 flex items-center text-2xl font-semibold">
 				<Logo classNames="mr-1 text-yellow-400 text-4xl flex-none" />
-				H2OGPT
+				h2oGPT
 				<div
 					class="ml-3 flex h-6 items-center rounded-lg border border-gray-100 bg-gray-50 px-2 text-base text-gray-400 dark:border-gray-700/60 dark:bg-gray-800"
 				>
@@ -40,7 +40,12 @@
 				</div>
 			</div>
 			<p class="text-base text-gray-600 dark:text-gray-400">
-				Making the community's best AI chat models available to everyone.
+				Making h2oGPT models available to everyone.
+				For more information, visit our GitHub pages: <a href="https://github.com/h2oai/h2o-llmstudio" style="text-decoration: underline;">H2O LLM Studio</a> and <a href="https://github.com/h2oai/h2ogpt" style="text-decoration: underline;">h2oGPT</a><br>
+			</p>
+			<p>
+				<br>
+				<iframe src="https://ghbtns.com/github-btn.html?user=h2oai&repo=h2o-llmstudio&type=star&count=true&size=small" frameborder="0" scrolling="0" width="150" height="20" title="GitHub"></iframe>
 			</p>
 		</div>
 	</div>

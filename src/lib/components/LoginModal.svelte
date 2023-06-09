@@ -18,7 +18,7 @@
 		class="flex w-full flex-col items-center gap-6 bg-gradient-to-t from-yellow-500/40 via-yellow-500/10 to-yellow-500/0 px-4 pb-10 pt-9 text-center"
 	>
 		<h2 class="flex items-center text-2xl font-semibold text-gray-800">
-			<Logo classNames="text-3xl mr-1.5" />H2OGPT
+			<Logo classNames="text-3xl mr-1.5" />h2oGPT
 			<div
 				class="ml-3 flex h-6 items-center rounded-lg border border-gray-100 bg-gray-50 px-2 text-base text-gray-400"
 			>

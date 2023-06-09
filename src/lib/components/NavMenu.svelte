@@ -24,7 +24,7 @@
 <div class="sticky top-0 flex flex-none items-center justify-between px-3 py-3.5 max-sm:pt-0">
 	<a class="flex items-center rounded-xl text-lg font-semibold" href="{PUBLIC_ORIGIN}{base}/">
 		<Logo classNames="mr-1 text-3xl" />
-		H2OGPT
+		h2oGPT
 	</a>
 	<a
 		href={`${base}/`}
