@@ -51,6 +51,10 @@ Alternatively, you can use a [free MongoDB Atlas](https://www.mongodb.com/pricin
 
 You will need a Hugging Face access token to run Chat UI locally, using the remote inference endpoints. You can get one from [your Hugging Face profile](https://huggingface.co/settings/tokens).
 
+## Install Node
+
+To install Node.js and npm with nvm, run: `curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.0/install.sh | bash` and `nvm install node`
+
 ## Launch
 
 After you're done with the `.env.local` file you can run Chat UI locally with:

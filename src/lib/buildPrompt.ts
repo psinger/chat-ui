@@ -52,6 +52,8 @@ export async function buildPrompt(
 			.slice(-(model.parameters?.truncate ?? 0))
 			.join(" ");
 
+	// console.log(finalPrompt);
+
 	// Not super precise, but it's truncated in the model's backend anyway
 	return finalPrompt;
 }
