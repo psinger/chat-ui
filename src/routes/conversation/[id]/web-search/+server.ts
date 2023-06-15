@@ -1,6 +1,5 @@
 import { authCondition } from "$lib/server/auth";
 import { collections } from "$lib/server/database";
-import { defaultModel } from "$lib/server/models";
 import { searchWeb } from "$lib/server/websearch/searchWeb";
 import type { Message } from "$lib/types/Message";
 import { error } from "@sveltejs/kit";
@@ -10,6 +9,8 @@ import type { WebSearch } from "$lib/types/WebSearch";
 import { generateQuery } from "$lib/server/websearch/generateQuery";
 import { parseWeb } from "$lib/server/websearch/parseWeb";
 import { summarizeWeb } from "$lib/server/websearch/summarizeWeb";
+import { createLogger } from "vite";
+import { models_summarize } from "$lib/server/models";
 
 interface GenericObject {
 	[key: string]: GenericObject | unknown;
@@ -23,7 +24,6 @@ function removeLinks(obj: GenericObject) {
 	return obj;
 }
 export async function GET({ params, locals, url }) {
-	const model = defaultModel;
 	const convId = new ObjectId(params.id);
 	const searchId = new ObjectId();
 
@@ -35,6 +35,9 @@ export async function GET({ params, locals, url }) {
 	if (!conv) {
 		throw error(404, "Conversation not found");
 	}
+
+
+	const summarizeModel = models_summarize.find((m) => m.id === conv.model);
 
 	const prompt = z.string().trim().min(1).parse(url.searchParams.get("prompt"));
 
@@ -58,20 +61,30 @@ export async function GET({ params, locals, url }) {
 			};
 
 			function appendUpdate(message: string, args?: string[]) {
+				
 				webSearch.messages.push({
 					type: "update",
 					message,
 					args,
 				});
 				controller.enqueue(JSON.stringify({ messages: webSearch.messages }));
+
 			}
 
 			try {
-				appendUpdate("Generating search query");
-				webSearch.searchQuery = await generateQuery(messages, model);
+				
+				//webSearch.searchQuery = await generateQuery(messages, model);
 
-				appendUpdate("Searching Google", [webSearch.searchQuery]);
+				webSearch.searchQuery = messages[messages.length - 1].content;
+
+				appendUpdate("Generating search query", [JSON.stringify(webSearch.searchQuery)]);
+
+				await new Promise((r) => setTimeout(r, 1000));
+
+				appendUpdate("Searching Google");
+
 				const results = await searchWeb(webSearch.searchQuery);
+
 
 				let text = "";
 				webSearch.results =
@@ -80,11 +93,16 @@ export async function GET({ params, locals, url }) {
 					[];
 
 				if (results.knowledge_graph) {
+					console.log("knowledge graph found");
 					// if google returns a knowledge graph, we use it
-					webSearch.knowledgeGraph = JSON.stringify(removeLinks(results.knowledge_graph));
-					text = webSearch.knowledgeGraph;
+					//webSearch.knowledgeGraph = JSON.stringify(removeLinks(results.knowledge_graph));
+					//text = webSearch.knowledgeGraph;
+					text = removeLinks(results.knowledge_graph);
+					//console.log(text);
 					appendUpdate("Found a Google knowledge page");
-				} else if (webSearch.results.length > 0) {
+				} else 
+				if (webSearch.results.length > 0) {
+					console.log("NO knowledge graph found");
 					// otherwise we use the top result from search
 					const topUrl = webSearch.results[0];
 					appendUpdate("Browsing first result", [JSON.stringify(topUrl)]);
@@ -95,9 +113,15 @@ export async function GET({ params, locals, url }) {
 					throw new Error("No results found for this search query");
 				}
 
-				appendUpdate("Creating summary");
-				webSearch.summary = await summarizeWeb(text, webSearch.searchQuery, model);
-				appendUpdate("Injecting summary", [JSON.stringify(webSearch.summary)]);
+				//console.log(text)
+
+
+				appendUpdate("Summarizing prompt");
+				const summary = await summarizeWeb(text, webSearch.searchQuery, summarizeModel);
+
+				webSearch.summary = summary
+
+
 			} catch (searchError) {
 				if (searchError instanceof Error) {
 					webSearch.messages.push({
@@ -109,13 +133,31 @@ export async function GET({ params, locals, url }) {
 			}
 
 			const res = await collections.webSearches.insertOne(webSearch);
+
 			webSearch.messages.push({
 				type: "result",
 				id: res.insertedId.toString(),
 			});
+
+	
+			// await collections.conversations.updateOne(
+			// 	{
+			// 		_id: convId,
+			// 	},
+			// 	{
+			// 		$set: {
+			// 			messages,
+			// 			updatedAt: new Date(),
+			// 		},
+			// 	}
+			// );
+
 			controller.enqueue(JSON.stringify({ messages: webSearch.messages }));
+			
 		},
 	});
 
+
 	return new Response(stream, { headers: { "Content-Type": "application/json" } });
+
 }

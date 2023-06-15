@@ -51,6 +51,7 @@ export async function parseWeb(url: string) {
 
 	// recursively extract text content from the body and then remove newlines and multiple spaces
 	const text = (naiveInnerText(body) ?? "").replace(/ {2}|\r\n|\n|\r/gm, "");
+	//const text = naiveInnerText(body) ?? "";
 
 	return text;
 }

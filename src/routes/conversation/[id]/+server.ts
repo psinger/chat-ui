@@ -71,6 +71,7 @@ export async function POST({ request, fetch, locals, params }) {
 	const prompt = await buildPrompt(messages, model, web_search_id);
 	const randomEndpoint = modelEndpoint(model);
 
+
 	const abortController = new AbortController();
 
 	const resp = await fetch(randomEndpoint.url, {

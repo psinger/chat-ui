@@ -1,12 +1,12 @@
-import { buildPrompt } from "$lib/buildPrompt";
+import { buildQuestionPrompt } from "$lib/buildPrompt";
 import { authCondition } from "$lib/server/auth";
 import { collections } from "$lib/server/database";
-import { generateFromDefaultEndpoint } from "$lib/server/generateFromDefaultEndpoint";
-import { defaultModel } from "$lib/server/models";
+import { generateFromEndpoint } from "$lib/server/generateFromEndpoint";
+import { models_summarize } from "$lib/server/models";
 import { error } from "@sveltejs/kit";
 import { ObjectId } from "mongodb";
 
-export async function POST({ params, locals }) {
+export async function POST({request, fetch, params, locals }) {
 	const convId = new ObjectId(params.id);
 
 	const conversation = await collections.conversations.findOne({
@@ -18,14 +18,16 @@ export async function POST({ params, locals }) {
 		throw error(404, "Conversation not found");
 	}
 
+	const summarizeModel = models_summarize.find((m) => m.id === conversation.model);
+
 	const firstMessage = conversation.messages.find((m) => m.from === "user");
 
-	const userPrompt =
-		`Please summarize the following message as a single sentence of less than 5 words:\n` +
-		firstMessage?.content;
+	const content = firstMessage?.content;
+	const question = "Output a short and cohesive title in two words summarizing the previous message. Only print the title."
 
-	const prompt = await buildPrompt([{ from: "user", content: userPrompt }], defaultModel);
-	const generated_text = await generateFromDefaultEndpoint(prompt);
+	const prompt = await buildQuestionPrompt(content, question, summarizeModel);
+
+	const generated_text = await generateFromEndpoint(summarizeModel, prompt);
 
 	if (generated_text) {
 		await collections.conversations.updateOne(
@@ -34,7 +36,7 @@ export async function POST({ params, locals }) {
 				...authCondition(locals),
 			},
 			{
-				$set: { title: generated_text },
+				$set: { title: generated_text.replace(/"/g, "")},
 			}
 		);
 	}

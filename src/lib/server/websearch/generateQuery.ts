@@ -1,5 +1,5 @@
 import type { Message } from "$lib/types/Message";
-import { generateFromDefaultEndpoint } from "../generateFromDefaultEndpoint";
+import { generateFromEndpoint } from "../generateFromEndpoint";
 import type { BackendModel } from "../models";
 
 export async function generateQuery(messages: Message[], model: BackendModel) {
@@ -16,7 +16,7 @@ export async function generateQuery(messages: Message[], model: BackendModel) {
 		model.assistantMessageToken +
 		"Query: ";
 
-	const searchQuery = await generateFromDefaultEndpoint(promptSearchQuery).then((query) => {
+	const searchQuery = await generateFromEndpoint(promptSearchQuery).then((query) => {
 		const arr = query.split(/\r?\n/);
 		return arr[0].length > 0 ? arr[0] : arr[1];
 	});

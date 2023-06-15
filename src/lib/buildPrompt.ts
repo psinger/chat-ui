@@ -13,7 +13,59 @@ export async function buildPrompt(
 	model: BackendModel,
 	webSearchId?: string
 ): Promise<string> {
-	const prompt =
+	
+
+	if (webSearchId) {
+		const webSearch = await collections.webSearches.findOne({
+			_id: new ObjectId(webSearchId),
+		});
+
+		if (!webSearch) throw new Error("Web search not found");
+
+		const prompt =
+		messages
+			.map(
+				(m) =>
+					(m.from === "user"
+						?  m.content
+						: m.content) +
+					(model.messageEndToken
+						? m.content.endsWith(model.messageEndToken)
+							? ""
+							: model.messageEndToken
+						: "")
+			)
+			.join("") + model.assistantMessageToken;
+
+		// if (webSearch.summary) {
+		// 	webPrompt =
+		// 		//model.assistantMessageToken +
+		// 		//`The following context was found while searching the internet: ${webSearch.summary}` +
+		// 		model.userMessageToken +
+		// 		`${webSearch.summary}` +
+		// 		model.messageEndToken +
+		// 		model.assistantMessageToken;
+		// }
+
+		const finalPrompt =
+			model.preprompt +
+			model.assistantMessageToken +
+			`${webSearch.summary}` +
+			model.messageEndToken +
+			model.userMessageToken +
+			prompt
+				.split(" ")
+				.slice(-(model.parameters?.truncate ?? 0))
+				.join(" ");
+
+		console.log("search prompt: " + finalPrompt);
+
+		// Not super precise, but it's truncated in the model's backend anyway
+		return finalPrompt;
+	} else
+	{
+
+		const prompt =
 		messages
 			.map(
 				(m) =>
@@ -27,33 +79,45 @@ export async function buildPrompt(
 						: "")
 			)
 			.join("") + model.assistantMessageToken;
+		const finalPrompt =
+			model.preprompt +
+			prompt
+				.split(" ")
+				.slice(-(model.parameters?.truncate ?? 0))
+				.join(" ");
 
-	let webPrompt = "";
+		console.log("final prompt: " + finalPrompt);
 
-	if (webSearchId) {
-		const webSearch = await collections.webSearches.findOne({
-			_id: new ObjectId(webSearchId),
-		});
-
-		if (!webSearch) throw new Error("Web search not found");
-
-		if (webSearch.summary) {
-			webPrompt =
-				model.assistantMessageToken +
-				`The following context was found while searching the internet: ${webSearch.summary}` +
-				model.messageEndToken;
-		}
+		// Not super precise, but it's truncated in the model's backend anyway
+		return finalPrompt;
 	}
+
+	
+}
+
+export async function buildQuestionPrompt(
+	content: string,
+	question: string,
+	model: BackendModel,
+): Promise<string> {
+	
+
 	const finalPrompt =
 		model.preprompt +
-		webPrompt +
-		prompt
+		model.assistantMessageToken +
+		content
 			.split(" ")
-			.slice(-(model.parameters?.truncate ?? 0))
-			.join(" ");
-
-	// console.log(finalPrompt);
+			.slice(0, (model.parameters?.truncate-64 ?? 0))
+			.join(" ") +
+		model.messageEndToken +
+		model.userMessageToken +
+		question +
+		model.messageEndToken +
+		model.assistantMessageToken
 
 	// Not super precise, but it's truncated in the model's backend anyway
 	return finalPrompt;
+
+
+	
 }

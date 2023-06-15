@@ -175,7 +175,11 @@
 								webSearchMessages = (JSON.parse(value) as { messages: WebSearchMessage[] })
 									.messages;
 							} catch (parseError) {
+								console.error(value);
+								console.error(parseError);
 								// in case of parsing error we wait for the next message
+								searchResponseId = lastSearchMessage.id;
+								reader.cancel();
 								return;
 							}
 
@@ -190,6 +194,8 @@
 							searchResponseId = null;
 						});
 				}
+
+				$webSearchParameters.useSearch = false;
 			}
 
 			await getTextGenerationStream(message, messageId, isRetry, searchResponseId ?? undefined);
@@ -197,6 +203,7 @@
 			webSearchMessages = [];
 			if (browser) invalidate(UrlDependency.Conversation);
 
+			
 			if (messages.filter((m) => m.from === "user").length === 1) {
 				summarizeTitle($page.params.id)
 					.then(() => invalidate(UrlDependency.ConversationList))
@@ -204,6 +211,8 @@
 			} else {
 				await invalidate(UrlDependency.ConversationList);
 			}
+			
+
 		} catch (err) {
 			if (err instanceof Error && err.message.includes("overloaded")) {
 				$error = "Too much traffic, please try again.";
