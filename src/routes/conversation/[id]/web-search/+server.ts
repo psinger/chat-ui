@@ -81,7 +81,7 @@ export async function GET({ params, locals, url }) {
 
 				await new Promise((r) => setTimeout(r, 1000));
 
-				appendUpdate("Searching Google");
+				appendUpdate("Searching web");
 
 				const results = await searchWeb(webSearch.searchQuery);
 
@@ -92,34 +92,54 @@ export async function GET({ params, locals, url }) {
 						results.organic_results.map((el: { link: string }) => el.link)) ??
 					[];
 
-				if (results.knowledge_graph) {
-					console.log("knowledge graph found");
+				console.log(results);
+
+				// if (results.knowledge_graph) {
+				// 	console.log("knowledge graph found");
+				// 	// if google returns a knowledge graph, we use it
+				// 	//webSearch.knowledgeGraph = JSON.stringify(removeLinks(results.knowledge_graph));
+				// 	//text = webSearch.knowledgeGraph;
+					
+				// 	text = removeLinks(results.knowledge_graph);
+				// 	//console.log(text);
+				// 	appendUpdate("Found a Google knowledge page");
+				// } else 
+				if (results.answer_box) {
+					console.log("answer box found");
 					// if google returns a knowledge graph, we use it
 					//webSearch.knowledgeGraph = JSON.stringify(removeLinks(results.knowledge_graph));
 					//text = webSearch.knowledgeGraph;
-					text = removeLinks(results.knowledge_graph);
+					console.log(results.answer_box);
+
+					if (results.answer_box.link) {
+						appendUpdate("Browsing", [JSON.stringify(results.answer_box.link)]);
+					} else {
+						appendUpdate("Browsing");
+					}
+
+					text = removeLinks(results.answer_box);
+					
+					text = JSON.stringify(text);
 					//console.log(text);
-					appendUpdate("Found a Google knowledge page");
+					
+					await new Promise((r) => setTimeout(r, 1000));
 				} else 
 				if (webSearch.results.length > 0) {
 					console.log("NO knowledge graph found");
 					// otherwise we use the top result from search
 					const topUrl = webSearch.results[0];
-					appendUpdate("Browsing first result", [JSON.stringify(topUrl)]);
+					appendUpdate("Browsing", [JSON.stringify(topUrl)]);
 
 					text = await parseWeb(topUrl);
 					if (!text) throw new Error("text of the webpage is null");
+
+					appendUpdate("Summarizing web content");
+					text = await summarizeWeb(text, webSearch.searchQuery, summarizeModel);
 				} else {
 					throw new Error("No results found for this search query");
 				}
 
-				//console.log(text)
-
-
-				appendUpdate("Summarizing prompt");
-				const summary = await summarizeWeb(text, webSearch.searchQuery, summarizeModel);
-
-				webSearch.summary = summary
+				webSearch.summary = text
 
 
 			} catch (searchError) {
