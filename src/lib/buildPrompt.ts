@@ -58,7 +58,7 @@ export async function buildPrompt(
 				.slice(-(model.parameters?.truncate ?? 0))
 				.join(" ");
 
-		console.log("search prompt: " + finalPrompt);
+		//console.log("search prompt: " + finalPrompt);
 
 		// Not super precise, but it's truncated in the model's backend anyway
 		return finalPrompt;
@@ -86,7 +86,7 @@ export async function buildPrompt(
 				.slice(-(model.parameters?.truncate ?? 0))
 				.join(" ");
 
-		console.log("final prompt: " + finalPrompt);
+		//console.log("final prompt: " + finalPrompt);
 
 		// Not super precise, but it's truncated in the model's backend anyway
 		return finalPrompt;

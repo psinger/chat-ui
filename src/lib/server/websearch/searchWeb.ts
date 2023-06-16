@@ -5,7 +5,7 @@ import type { GoogleParameters } from "serpapi";
 
 // Show result as JSON
 export async function searchWeb(query: string) {
-	console.log("searching web for " + query);
+	//console.log("searching web for " + query);
 	const params = {
 		q: query,
 		hl: "en",

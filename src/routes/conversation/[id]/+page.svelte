@@ -202,7 +202,7 @@
 
 			webSearchMessages = [];
 			if (browser) invalidate(UrlDependency.Conversation);
-
+			
 			
 			if (messages.filter((m) => m.from === "user").length === 1) {
 				summarizeTitle($page.params.id)
@@ -210,8 +210,7 @@
 					.catch(console.error);
 			} else {
 				await invalidate(UrlDependency.ConversationList);
-			}
-			
+			}			
 
 		} catch (err) {
 			if (err instanceof Error && err.message.includes("overloaded")) {

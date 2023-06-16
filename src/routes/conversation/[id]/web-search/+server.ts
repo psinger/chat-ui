@@ -92,7 +92,7 @@ export async function GET({ params, locals, url }) {
 						results.organic_results.map((el: { link: string }) => el.link)) ??
 					[];
 
-				console.log(results);
+				//console.log(results);
 
 				// if (results.knowledge_graph) {
 				// 	console.log("knowledge graph found");
@@ -105,11 +105,11 @@ export async function GET({ params, locals, url }) {
 				// 	appendUpdate("Found a Google knowledge page");
 				// } else 
 				if (results.answer_box) {
-					console.log("answer box found");
+					//console.log("answer box found");
 					// if google returns a knowledge graph, we use it
 					//webSearch.knowledgeGraph = JSON.stringify(removeLinks(results.knowledge_graph));
 					//text = webSearch.knowledgeGraph;
-					console.log(results.answer_box);
+					//console.log(results.answer_box);
 
 					if (results.answer_box.link) {
 						appendUpdate("Browsing", [JSON.stringify(results.answer_box.link)]);
@@ -125,7 +125,7 @@ export async function GET({ params, locals, url }) {
 					await new Promise((r) => setTimeout(r, 1000));
 				} else 
 				if (webSearch.results.length > 0) {
-					console.log("NO knowledge graph found");
+					//console.log("NO knowledge graph found");
 					// otherwise we use the top result from search
 					const topUrl = webSearch.results[0];
 					appendUpdate("Browsing", [JSON.stringify(topUrl)]);
